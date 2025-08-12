@@ -1,0 +1,132 @@
+object frmLogin: TfrmLogin
+  Left = 0
+  Top = 0
+  BorderStyle = bsNone
+  Caption = 'Login'
+  ClientHeight = 369
+  ClientWidth = 779
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  TextHeight = 15
+  object pnlBemVindo: TPanel
+    Left = 399
+    Top = 0
+    Width = 380
+    Height = 369
+    Align = alRight
+    Color = clCaptionText
+    ParentBackground = False
+    TabOrder = 0
+    ExplicitLeft = 377
+    ExplicitHeight = 313
+    object lbBemvindo: TLabel
+      Left = 48
+      Top = 63
+      Width = 297
+      Height = 138
+      Caption = '        Bem Vindo'#13#10'              ao'#13#10'Sistema de Vendas'
+      Color = clWhite
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -40
+      Font.Name = 'Arial Narrow'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object pnlLogin: TPanel
+    Left = 0
+    Top = 0
+    Width = 377
+    Height = 369
+    Align = alLeft
+    Color = clFloralwhite
+    ParentBackground = False
+    TabOrder = 1
+    ExplicitHeight = 313
+    object lbUsuario: TLabel
+      Left = 56
+      Top = 72
+      Width = 48
+      Height = 20
+      Caption = 'Usu'#225'rio'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Arial Narrow'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lbSenha: TLabel
+      Left = 56
+      Top = 154
+      Width = 39
+      Height = 20
+      Caption = 'Senha'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Arial Narrow'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edUsuario: TEdit
+      Left = 56
+      Top = 96
+      Width = 227
+      Height = 23
+      TabOrder = 0
+    end
+    object edSenha: TEdit
+      Left = 56
+      Top = 178
+      Width = 227
+      Height = 23
+      TabOrder = 1
+    end
+    object btnAcessar: TButton
+      Left = 56
+      Top = 240
+      Width = 97
+      Height = 33
+      Caption = 'Acessar'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBackground
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
+    object btnFechar: TButton
+      Left = 186
+      Top = 240
+      Width = 97
+      Height = 33
+      Caption = 'Fechar'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      OnClick = btnFecharClick
+    end
+  end
+  object Panel3: TPanel
+    Left = 375
+    Top = 0
+    Width = 17
+    Height = 441
+    Color = clRed
+    ParentBackground = False
+    TabOrder = 2
+  end
+end

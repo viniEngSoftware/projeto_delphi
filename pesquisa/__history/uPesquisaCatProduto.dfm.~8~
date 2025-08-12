@@ -1,0 +1,183 @@
+object frmPesquisaCatProduto: TfrmPesquisaCatProduto
+  Left = 0
+  Top = 0
+  Caption = 'Categoria de Produto'
+  ClientHeight = 441
+  ClientWidth = 989
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  TextHeight = 15
+  object pnBottomPesquisa: TPanel
+    Left = 0
+    Top = 400
+    Width = 989
+    Height = 41
+    Align = alBottom
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+    ExplicitTop = 383
+    ExplicitWidth = 983
+    DesignSize = (
+      989
+      41)
+    object btConfirmar: TButton
+      Left = 775
+      Top = 9
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = 'Confirmar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+    object btFechar: TButton
+      Left = 869
+      Top = 9
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = 'Fechar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+  end
+  object pnTopPesquisa: TPanel
+    Left = 0
+    Top = 0
+    Width = 989
+    Height = 57
+    Align = alTop
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 1
+    ExplicitWidth = 983
+    object lbPesquisa: TLabel
+      Left = 8
+      Top = 4
+      Width = 54
+      Height = 16
+      Caption = 'Pesquisa'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+    end
+    object cbPesquisa: TComboBox
+      Left = 287
+      Top = 21
+      Width = 233
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+    object edPesquisa: TEdit
+      Left = 8
+      Top = 21
+      Width = 265
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object btConsulta: TButton
+      Left = 541
+      Top = 20
+      Width = 81
+      Height = 25
+      Caption = 'Consultar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+    end
+  end
+  object dbPesquisaCatProduto: TDBGrid
+    Left = 0
+    Top = 57
+    Width = 989
+    Height = 343
+    Align = alClient
+    DataSource = dstPesquisaCatProduto
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    TabOrder = 2
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'codigo'
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'nome'
+        Title.Caption = 'Descri'#231#227'o'
+        Visible = True
+      end>
+  end
+  object qryPesquisaCatProduto: TFDQuery
+    Connection = dmConexao.fdConexao
+    SQL.Strings = (
+      'SELECT * FROM cat_produto')
+    Left = 656
+    Top = 168
+    object qryPesquisaCatProdutocodigo: TIntegerField
+      FieldName = 'codigo'
+      Origin = 'codigo'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object qryPesquisaCatProdutonome: TWideStringField
+      FieldName = 'nome'
+      Origin = 'nome'
+      Size = 150
+    end
+  end
+  object dstPesquisaCatProduto: TDataSource
+    DataSet = qryPesquisaCatProduto
+    Left = 736
+    Top = 168
+  end
+end

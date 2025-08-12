@@ -1,0 +1,323 @@
+object frmPesquisaCliente: TfrmPesquisaCliente
+  Left = 0
+  Top = 0
+  Caption = 'Pesquisa de Clientes'
+  ClientHeight = 441
+  ClientWidth = 989
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poScreenCenter
+  OnShow = FormShow
+  TextHeight = 15
+  object pnTopPesquisa: TPanel
+    Left = 0
+    Top = 0
+    Width = 989
+    Height = 57
+    Align = alTop
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+    ExplicitWidth = 983
+    object lbPesquisa: TLabel
+      Left = 8
+      Top = 4
+      Width = 54
+      Height = 16
+      Caption = 'Pesquisa'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+    end
+    object cbPesquisa: TComboBox
+      Left = 287
+      Top = 21
+      Width = 233
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+    object edPesquisa: TEdit
+      Left = 8
+      Top = 21
+      Width = 265
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+    end
+    object btConsulta: TButton
+      Left = 541
+      Top = 20
+      Width = 81
+      Height = 25
+      Caption = 'Consultar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = btConsultaClick
+    end
+  end
+  object pnBottomPesquisa: TPanel
+    Left = 0
+    Top = 400
+    Width = 989
+    Height = 41
+    Align = alBottom
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 1
+    ExplicitTop = 383
+    ExplicitWidth = 983
+    DesignSize = (
+      989
+      41)
+    object btConfirmar: TButton
+      Left = 775
+      Top = 9
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = 'Confirmar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnClick = btConfirmarClick
+      ExplicitLeft = 769
+    end
+    object btFechar: TButton
+      Left = 869
+      Top = 9
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = 'Fechar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = btFecharClick
+      ExplicitLeft = 863
+    end
+  end
+  object dbPesquisaCliente: TDBGrid
+    Left = 0
+    Top = 57
+    Width = 989
+    Height = 343
+    Align = alClient
+    DataSource = dstPesquisaCliente
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    TabOrder = 2
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    OnDblClick = dbPesquisaClienteDblClick
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'codigo'
+        ImeName = 'Portuguese (Brazilian ABNT)'
+        Title.Caption = 'Codigo'
+        Width = 50
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'nome'
+        Title.Caption = 'Nome'
+        Width = 223
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'data_cadastro'
+        Title.Caption = 'Data de Cadastro'
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'cpf'
+        Title.Caption = 'CPF'
+        Width = 39
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'telefone'
+        Title.Caption = 'Telefone'
+        Width = 71
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'email'
+        Title.Caption = 'E-mail'
+        Width = 150
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'data_nascimento'
+        Title.Caption = 'Data de Nascimento'
+        Width = 129
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'cep'
+        Title.Caption = 'CEP'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'bairro'
+        Title.Caption = 'Bairro'
+        Width = 208
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'logradouro'
+        Title.Caption = 'Logradouro'
+        Width = 334
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'numero'
+        Title.Caption = 'N'#250'mero'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'complemento'
+        Title.Caption = 'Complemento'
+        Width = 313
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'pais'
+        Title.Caption = 'Pais'
+        Width = 110
+        Visible = True
+      end>
+  end
+  object qryPesquisaCliente: TFDQuery
+    Connection = dmConexao.fdConexao
+    SQL.Strings = (
+      'SELECT * FROM CLIENTE')
+    Left = 656
+    Top = 168
+    object qryPesquisaClientecodigo: TIntegerField
+      FieldName = 'codigo'
+      Origin = 'codigo'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object qryPesquisaClientenome: TWideStringField
+      FieldName = 'nome'
+      Origin = 'nome'
+      Size = 150
+    end
+    object qryPesquisaClientedata_cadastro: TDateField
+      FieldName = 'data_cadastro'
+      Origin = 'data_cadastro'
+    end
+    object qryPesquisaClientecpf: TWideStringField
+      FieldName = 'cpf'
+      Origin = 'cpf'
+      FixedChar = True
+      Size = 11
+    end
+    object qryPesquisaClientetelefone: TWideStringField
+      FieldName = 'telefone'
+      Origin = 'telefone'
+    end
+    object qryPesquisaClienteemail: TWideStringField
+      FieldName = 'email'
+      Origin = 'email'
+      Size = 150
+    end
+    object qryPesquisaClientedata_nascimento: TDateField
+      FieldName = 'data_nascimento'
+      Origin = 'data_nascimento'
+    end
+    object qryPesquisaClientecep: TWideStringField
+      FieldName = 'cep'
+      Origin = 'cep'
+      FixedChar = True
+      Size = 8
+    end
+    object qryPesquisaClientebairro: TWideStringField
+      FieldName = 'bairro'
+      Origin = 'bairro'
+      Size = 100
+    end
+    object qryPesquisaClientelogradouro: TWideStringField
+      FieldName = 'logradouro'
+      Origin = 'logradouro'
+      Size = 150
+    end
+    object qryPesquisaClientenumero: TWideStringField
+      FieldName = 'numero'
+      Origin = 'numero'
+      Size = 10
+    end
+    object qryPesquisaClientecomplemento: TWideStringField
+      FieldName = 'complemento'
+      Origin = 'complemento'
+      Size = 100
+    end
+    object qryPesquisaClientepais: TWideStringField
+      FieldName = 'pais'
+      Origin = 'pais'
+      Size = 50
+    end
+  end
+  object dstPesquisaCliente: TDataSource
+    DataSet = qryPesquisaCliente
+    Left = 736
+    Top = 168
+  end
+end
