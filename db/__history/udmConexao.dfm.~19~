@@ -1,0 +1,9 @@
+object dmConexao: TdmConexao
+  Height = 551
+  Width = 950
+  PixelsPerInch = 144
+  object fdConexao: TFDConnection
+    Left = 456
+    Top = 168
+  end
+end

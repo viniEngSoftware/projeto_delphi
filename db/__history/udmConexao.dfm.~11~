@@ -1,0 +1,19 @@
+object dmConexao: TdmConexao
+  OnCreate = DataModuleCreate
+  Height = 551
+  Width = 950
+  PixelsPerInch = 144
+  object fdConexao: TFDConnection
+    Params.Strings = (
+      'DriverID := PG              '
+      'Database := sistemadevendas'
+      'User_Name := postgres       '
+      'Params.Password := postgres         '
+      'Server=localhost    '
+      'Port=5432'
+      'DriverID=PG')
+    LoginPrompt = False
+    Left = 456
+    Top = 168
+  end
+end

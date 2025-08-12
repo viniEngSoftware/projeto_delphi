@@ -1,0 +1,32 @@
+unit uHCadCliente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Data.DB, Vcl.Grids,
+  Vcl.DBGrids, Vcl.ExtCtrls;
+
+type
+  TfrmTelaHeranca = class(TForm)
+    pgControle: TPageControl;
+    tbAcesso: TTabSheet;
+    tbCadastro: TTabSheet;
+    pnAcesso: TPanel;
+    DBGrid1: TDBGrid;
+    Panel1: TPanel;
+    Panel2: TPanel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTelaHeranca: TfrmTelaHeranca;
+
+implementation
+
+{$R *.dfm}
+
+end.

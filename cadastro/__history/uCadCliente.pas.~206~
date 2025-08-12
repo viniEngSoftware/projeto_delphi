@@ -1,0 +1,484 @@
+unit uCadCliente;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls, Vcl.StdCtrls, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Datasnap.DBClient, uTelaHeranca,
+   udmConexao, uPesquisaCliente;
+
+type
+  TfrmCadCliente = class(TfrmTelaHeranca)
+    btFechar: TButton;
+    edCodigo: TEdit;
+    lbCodigo: TLabel;
+    btIncluir: TButton;
+    btAlterar: TButton;
+    btExcluir: TButton;
+    btCFechar: TButton;
+    edNome: TEdit;
+    lbNome: TLabel;
+    edCPF: TEdit;
+    edEmail: TEdit;
+    DtpCadastro: TDateTimePicker;
+    lbDtCadastro: TLabel;
+    lbCPF: TLabel;
+    lbEmail: TLabel;
+    lbTelefone: TLabel;
+    edTelefone: TEdit;
+    lbANome: TLabel;
+    lbADtDatacadastro: TLabel;
+    lbACPF: TLabel;
+    lbAEmail: TLabel;
+    lbATelefone: TLabel;
+    lbACep: TLabel;
+    edANome: TEdit;
+    edACPF: TEdit;
+    edAEmail: TEdit;
+    edATelefone: TEdit;
+    edACEP: TEdit;
+    edACoonsultar: TButton;
+    Label1: TLabel;
+    dtpNasc: TDateTimePicker;
+    gbDtcadastro: TGroupBox;
+    ADtcadastrode: TDateTimePicker;
+    ADtcadastroAte: TDateTimePicker;
+    lbdtacadDe: TLabel;
+    lbdtacadAte: TLabel;
+    btConfirmar: TButton;
+    btDesistir: TButton;
+    btConsultar: TButton;
+    gbEndereco: TGroupBox;
+    edPais: TEdit;
+    lbCep: TLabel;
+    lbLogradouro: TLabel;
+    lbPais: TLabel;
+    lbNumero: TLabel;
+    edCep: TEdit;
+    edLogradouro: TEdit;
+    edNumero: TEdit;
+    lbBairro: TLabel;
+    lbComplemento: TLabel;
+    edBairro: TEdit;
+    edComplemento: TEdit;
+    procedure btFecharClick(Sender: TObject);
+    procedure btCFecharClick(Sender: TObject);
+    procedure btIncluirClick(Sender: TObject);
+    procedure btAlterarClick(Sender: TObject);
+    procedure btConfirmarClick(Sender: TObject);
+    procedure btDesistirClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btConsultarClick(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+    procedure edCodigoExit(Sender: TObject);
+    procedure edACoonsultarClick(Sender: TObject);
+    procedure DBGrid1TitleClick(Column: TColumn);
+  private
+    { Private declarations }
+    FInserir: Boolean;
+    FAlterar: Boolean;
+    procedure InsereCliente;
+    procedure preencheCampos;
+    procedure alteraCliente;
+    procedure ConsultarClientes(const AOrderBy: string);
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCliente: TfrmCadCliente;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadCliente.FormCreate(Sender: TObject);
+begin
+  inherited;
+  LimparCampos(Self);
+  DtpCadastro.Date := Date;
+
+end;
+
+procedure TfrmCadCliente.btIncluirClick(Sender: TObject);
+begin
+  inherited;
+
+  LimparCampos(Self);
+  FInserir:= true;
+
+  btIncluir.Visible:=false;
+  btConfirmar.Visible:=true;
+  btDesistir.Visible:=true;
+  btConsultar.Visible:=false;
+  btAlterar.Visible:=false;
+  btExcluir.Visible:=False;
+  btCFechar.Visible:=false;
+
+end;
+
+procedure TfrmCadCliente.btAlterarClick(Sender: TObject);
+begin
+  inherited;
+
+  FAlterar := true;
+
+  btIncluir.Visible:=false;
+  btConfirmar.Visible:=true;
+  btDesistir.Visible:=true;
+  btConsultar.Visible:=false;
+  btAlterar.Visible:=false;
+  btExcluir.Visible:=False;
+  btCFechar.Visible:=false;
+
+  if edCodigo.Text = '' then
+  begin
+    edCodigo.Enabled:=true;
+    edCodigo.SetFocus;
+  end;
+
+
+end;
+
+procedure TfrmCadCliente.btConsultarClick(Sender: TObject);
+var
+  codigo: integer;
+begin
+  inherited;
+
+  frmPesquisaCliente:=TfrmPesquisaCliente.create(nil);
+
+  try
+    codigo := frmPesquisaCliente.SelecionarCliente;
+
+    if codigo > 0 then
+      edCodigo.Text := IntToStr(codigo);
+  finally
+    frmPesquisaCliente.Free;
+
+    preencheCampos;
+  end;
+
+end;
+
+procedure TfrmCadCliente.btExcluirClick(Sender: TObject);
+var
+  Qry: TFDQuery;
+begin
+  inherited;
+
+  Qry:= TFDQuery.Create(nil);
+
+  if MessageDlg('Deseja realmente excluir esse cliente?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+
+    try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    if edCodigo.Text <> '' then
+    begin
+      Qry.Close;
+      Qry.SQL.Clear;
+      Qry.SQL.Add('DELETE FROM CLIENTE WHERE codigo = '+ edCodigo.Text +'');
+
+      Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Cliente deletado com sucesso!')
+    else
+      ShowMessage('Erro ao deletar o cliente.');
+
+    end;
+  finally
+    LimparCampos(Self);
+
+    if Assigned(Qry) then
+      Qry.free;
+
+    qryListagem.Refresh;
+  end;
+
+  end;
+
+end;
+
+procedure TfrmCadCliente.btCFecharClick(Sender: TObject);
+begin
+  inherited;
+
+  Close;
+end;
+
+procedure TfrmCadCliente.btFecharClick(Sender: TObject);
+begin
+  inherited;
+
+  Close;
+
+end;
+
+procedure TfrmCadCliente.btConfirmarClick(Sender: TObject);
+begin
+  inherited;
+  btIncluir.Visible:=true;
+  btConfirmar.Visible:=false;
+  btDesistir.Visible:=false;
+  btConsultar.Visible:=true;
+  btAlterar.Visible:=true;
+  btExcluir.Visible:=true;
+  btCFechar.Visible:=true;
+
+  if FInserir then
+  begin
+    ShowMessage('Em inclusão');
+    InsereCliente;
+    FInserir:=false;
+  end;
+
+  if FAlterar then
+  begin
+    ShowMessage('Em alteração');
+    alteraCliente;
+    FAlterar:=false;
+  end;
+
+  FInserir:=false;
+
+  LimparCampos(Self);
+
+end;
+
+procedure TfrmCadCliente.btDesistirClick(Sender: TObject);
+begin
+  inherited;
+  LimparCampos(Self);
+
+  btIncluir.Visible:=true;
+  btConfirmar.Visible:=false;
+  btDesistir.Visible:=false;
+  btConsultar.Visible:=true;
+  btAlterar.Visible:=true;
+  btExcluir.Visible:=true;
+  btCFechar.Visible:=true;
+end;
+
+procedure TfrmCadCliente.DBGrid1DblClick(Sender: TObject);
+var
+  codigo : integer;
+begin
+  inherited;
+  try
+    codigo := qryListagem.FieldByName('codigo').AsInteger;
+
+    if codigo > 0 then
+      edCodigo.Text := IntToStr(codigo);
+  finally
+    tbCadastro.PageControl.ActivePage := tbCadastro;
+    preencheCampos;
+  end;
+end;
+
+
+procedure TfrmCadCliente.ConsultarClientes(const AOrderBy: string);
+begin
+
+  qryListagem.Close;
+  qryListagem.SQL.Clear;
+  qryListagem.SQL.Add('SELECT codigo, nome, data_cadastro, cpf, ');
+  qryListagem.SQL.Add('telefone, email, data_nascimento, cep, ');
+  qryListagem.SQL.Add('bairro, logradouro, numero, complemento, pais');
+  qryListagem.SQL.Add(' FROM CLIENTE');
+  qryListagem.SQL.Add('WHERE 1=1');
+  qryListagem.SQL.Add(' AND data_cadastro BETWEEN '+
+                      QuotedStr(FormatDateTime('yyyy-mm-dd', ADtcadastrode.Date))+'');
+  qryListagem.SQL.Add(' AND '+QuotedStr(FormatDateTime('yyyy-mm-dd', ADtcadastroAte.Date))+'');
+
+  if Trim(edANome.Text) <> '' then
+    qryListagem.SQL.Add('AND nome ILIKE '+QuotedStr('%' + edANome.Text + '%')+'');
+
+  if Trim(edACPF.Text) <> '' then
+    qryListagem.SQL.Add('AND cpf ILIKE '+QuotedStr('%' + edACPF.Text + '%')+'');
+
+  if Trim(edATelefone.Text) <> '' then
+    qryListagem.SQL.Add('AND telefone ILIKE '+QuotedStr('%' + edATelefone.Text + '%')+'');
+
+  if Trim(edAEmail.Text) <> '' then
+    qryListagem.SQL.Add('AND email ILIKE '+QuotedStr('%' + edAEmail.Text + '%')+'');
+
+  if Trim(edACEP.Text) <> '' then
+    qryListagem.SQL.Add('AND cep ILIKE '+QuotedStr('%' + edACEP.Text + '%')+'');
+
+  qryListagem.SQL.Add('ORDER BY nome ' + AOrderBy+ ' ');
+
+  qryListagem.Open;
+
+end;
+
+procedure TfrmCadCliente.edACoonsultarClick(Sender: TObject);
+begin
+  inherited;
+
+  ConsultarClientes('ASC');
+end;
+
+procedure TfrmCadCliente.edCodigoExit(Sender: TObject);
+begin
+  inherited;
+  preencheCampos;
+  edCodigo.Enabled:=false;
+end;
+
+procedure TfrmCadCliente.InsereCliente;
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    Qry.Close;
+    Qry.SQL.Clear;
+    Qry.SQL.Text := 'INSERT INTO cliente (' +
+                    ' nome, data_cadastro, cpf, ' +
+                    ' telefone, email, data_nascimento, ' +
+                    ' cep, bairro, logradouro, numero, ' +
+                    ' complemento, pais) ' +
+                    'VALUES (:nome, :data_cadastro, :cpf, :telefone, :email, :data_nascimento, :cep, :bairro, :logradouro, :numero, :complemento, :pais)';
+
+    Qry.ParamByName('nome').AsString := edNome.Text;
+    Qry.ParamByName('data_cadastro').AsDate :=  DtpCadastro.Date;
+    Qry.ParamByName('cpf').AsString := edCPF.Text;
+    Qry.ParamByName('telefone').AsString := edTelefone.Text;
+    Qry.ParamByName('email').AsString := edEmail.Text;
+    Qry.ParamByName('data_nascimento').AsDate := dtpNasc.Date;
+    Qry.ParamByName('cep').AsString := edCep.Text;
+    Qry.ParamByName('bairro').AsString := edBairro.Text;
+    Qry.ParamByName('logradouro').AsString := edLogradouro.Text;
+    Qry.ParamByName('numero').AsString := edNumero.Text;
+    Qry.ParamByName('complemento').AsString := edComplemento.Text;
+    Qry.ParamByName('pais').AsString := edPais.Text;
+
+    Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Cliente inserido com sucesso!')
+    else
+      ShowMessage('Erro ao inserir cliente.');
+
+  finally
+
+    if Assigned(Qry) then
+      Qry.free;
+
+  end;
+
+
+end;
+
+procedure TfrmCadCliente.preencheCampos;
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    if edCodigo.Text <> '' then
+    begin
+      Qry.Close;
+      Qry.SQL.Clear;
+      Qry.SQL.Add('SELECT * FROM CLIENTE WHERE codigo = '+ edCodigo.Text +'');
+      Qry.Open;
+
+      DtpCadastro.Date := qry.FieldByName('data_cadastro').AsDateTime;
+      edNome.Text := qry.FieldByName('nome').AsString;
+      edTelefone.Text := qry.FieldByName('telefone').AsString;
+      edCPF.Text := qry.FieldByName('cpf').AsString;
+      dtpNasc.Date := qry.FieldByName('data_nascimento').AsDateTime;
+      edEmail.Text := qry.FieldByName('email').AsString;
+      edCep.Text := qry.FieldByName('cep').AsString;
+      edLogradouro.Text := qry.FieldByName('logradouro').AsString;
+      edNumero.Text := qry.FieldByName('numero').AsString;
+      edBairro.Text := qry.FieldByName('bairro').AsString;
+      edComplemento.Text := qry.FieldByName('complemento').AsString;
+      edPais.Text := qry.FieldByName('pais').AsString;
+
+    end;
+  finally
+    if Assigned(Qry) then
+      Qry.free;
+  end;
+
+
+end;
+
+procedure TfrmCadCliente.alteraCliente;
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    Qry.Close;
+    Qry.SQL.Clear;
+    Qry.SQL.Text :=
+      'UPDATE cliente SET ' +
+      '  nome = :nome, ' +
+      '  data_cadastro = :data_cadastro, ' +
+      '  cpf = :cpf, ' +
+      '  telefone = :telefone, ' +
+      '  email = :email, ' +
+      '  data_nascimento = :data_nascimento, ' +
+      '  cep = :cep, ' +
+      '  bairro = :bairro, ' +
+      '  logradouro = :logradouro, ' +
+      '  numero = :numero, ' +
+      '  complemento = :complemento, ' +
+      '  pais = :pais ' +
+      'WHERE codigo = :codigo';
+
+
+    Qry.ParamByName('nome').AsString := edNome.Text;
+    Qry.ParamByName('data_cadastro').AsDate := DtpCadastro.Date;
+    Qry.ParamByName('cpf').AsString := edCPF.Text;
+    Qry.ParamByName('telefone').AsString := edTelefone.Text;
+    Qry.ParamByName('email').AsString := edEmail.Text;
+    Qry.ParamByName('data_nascimento').AsDate := dtpNasc.Date;
+    Qry.ParamByName('cep').AsString := edCep.Text;
+    Qry.ParamByName('bairro').AsString := edBairro.Text;
+    Qry.ParamByName('logradouro').AsString := edLogradouro.Text;
+    Qry.ParamByName('numero').AsString := edNumero.Text;
+    Qry.ParamByName('complemento').AsString := edComplemento.Text;
+    Qry.ParamByName('pais').AsString := edPais.Text;
+    Qry.ParamByName('codigo').AsInteger := StrToIntDef(edCodigo.Text, 0);
+
+
+    Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Cliente alterado com sucesso!')
+    else
+      ShowMessage('Nenhum cliente foi alterado.');
+
+  finally
+    Qry.Free;
+  end;
+end;
+
+end.

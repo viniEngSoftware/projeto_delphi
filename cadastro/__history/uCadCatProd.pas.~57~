@@ -1,0 +1,283 @@
+unit uCadCatProd;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids,
+  Vcl.DBGrids, Vcl.ExtCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, udmConexao, uTelaHeranca;
+
+type
+  TfrmCadCatProd = class(TForm)
+    pnTopo: TPanel;
+    DBGrid1: TDBGrid;
+    lbCodigo: TLabel;
+    edCodigo: TEdit;
+    lbDescricao: TLabel;
+    edDescricao: TEdit;
+    qryListagem: TFDQuery;
+    dtsListagem: TDataSource;
+    pnBaixo: TPanel;
+    btIncluir: TButton;
+    btAlterar: TButton;
+    btExcluir: TButton;
+    btCFechar: TButton;
+    btConfirmar: TButton;
+    btDesistir: TButton;
+    btConsultar: TButton;
+    qryListagemcodigo: TIntegerField;
+    qryListagemnome: TWideStringField;
+    procedure btCFecharClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btIncluirClick(Sender: TObject);
+    procedure btAlterarClick(Sender: TObject);
+    procedure btConfirmarClick(Sender: TObject);
+    procedure btDesistirClick(Sender: TObject);
+    procedure dtsListagemDataChange(Sender: TObject; Field: TField);
+    procedure btExcluirClick(Sender: TObject);
+  private
+    { Private declarations }
+    FInserir: Boolean;
+    FAlterar: Boolean;
+    procedure InsereCatProd;
+    procedure AtualizaCampos;
+    procedure alteracao;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCatProd: TfrmCadCatProd;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadCatProd.btAlterarClick(Sender: TObject);
+begin
+  FAlterar := true;
+
+  btIncluir.Visible:=false;
+  btConfirmar.Visible:=true;
+  btDesistir.Visible:=true;
+  btConsultar.Visible:=false;
+  btAlterar.Visible:=false;
+  btExcluir.Visible:=False;
+  btCFechar.Visible:=false;
+
+  if edCodigo.Text = '' then
+  begin
+    edCodigo.Enabled:=true;
+    edCodigo.SetFocus;
+  end;
+end;
+
+procedure TfrmCadCatProd.btCFecharClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfrmCadCatProd.btConfirmarClick(Sender: TObject);
+begin
+  btIncluir.Visible:=true;
+  btConfirmar.Visible:=false;
+  btDesistir.Visible:=false;
+  btConsultar.Visible:=true;
+  btAlterar.Visible:=true;
+  btExcluir.Visible:=true;
+  btCFechar.Visible:=true;
+
+  if FInserir then
+  begin
+    InsereCatProd;
+    FInserir:=false;
+  end;
+
+  if FAlterar then
+  begin
+    alteracao;
+    FAlterar:=false;
+  end;
+
+end;
+
+procedure TfrmCadCatProd.btDesistirClick(Sender: TObject);
+begin
+  btIncluir.Visible:=true;
+  btConfirmar.Visible:=false;
+  btDesistir.Visible:=false;
+  btConsultar.Visible:=true;
+  btAlterar.Visible:=true;
+  btExcluir.Visible:=true;
+  btCFechar.Visible:=true;
+end;
+
+procedure TfrmCadCatProd.btExcluirClick(Sender: TObject);
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  if MessageDlg('Deseja realmente excluir esse cliente?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+
+    try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    if edCodigo.Text <> '' then
+    begin
+      Qry.Close;
+      Qry.SQL.Clear;
+      Qry.SQL.Add('DELETE FROM cat_produto WHERE codigo = '+ edCodigo.Text +'');
+
+      Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Categoria de Produto com sucesso!')
+    else
+      ShowMessage('Erro ao deletar Categoria de Produto.');
+
+    end;
+  finally
+
+    if Assigned(Qry) then
+      Qry.free;
+
+    qryListagem.Refresh;
+  end;
+
+  end;
+
+end;
+
+procedure TfrmCadCatProd.btIncluirClick(Sender: TObject);
+begin
+  LimparCampos(Self);
+  FInserir:= true;
+
+  btIncluir.Visible:=false;
+  btConfirmar.Visible:=true;
+  btDesistir.Visible:=true;
+  btConsultar.Visible:=false;
+  btAlterar.Visible:=false;
+  btExcluir.Visible:=False;
+  btCFechar.Visible:=false;
+end;
+
+procedure TfrmCadCatProd.dtsListagemDataChange(Sender: TObject; Field: TField);
+begin
+  AtualizaCampos;
+end;
+
+procedure TfrmCadCatProd.FormShow(Sender: TObject);
+begin
+  LimparCampos(Self);
+
+  qryListagem.Connection := dmConexao.fdConexao;
+  qryListagem.Open;
+
+  qryListagem.First;
+
+  dtsListagem.OnDataChange := dtsListagemDataChange;
+
+  AtualizaCampos;
+
+  edCodigo.Enabled:=false;
+
+end;
+
+procedure TfrmCadCatProd.InsereCatProd;
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    Qry.Close;
+    Qry.SQL.Clear;
+    Qry.SQL.Text := 'INSERT INTO cat_produto (' +
+                    ' nome) ' +
+                    'VALUES (:descricao)';
+
+    Qry.ParamByName('descricao').AsString := eddescricao.Text;
+
+    Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Categoria de Produto inserido com sucesso!')
+    else
+      ShowMessage('Erro ao inserir Categoria de Produto.');
+
+  finally
+
+    if Assigned(Qry) then
+      Qry.free;
+
+    qryListagem.Refresh;
+
+  end;
+
+end;
+
+procedure TfrmCadCatProd.AtualizaCampos;
+begin
+
+  if not qryListagem.IsEmpty then
+  begin
+    edCodigo.Text := IntToStr(qryListagem.FieldByName('codigo').AsInteger);
+    edDescricao.Text := qryListagem.FieldByName('nome').AsString;
+  end
+  else
+  begin
+    edCodigo.Text := '';
+    edDescricao.Text := '';
+  end;
+
+end;
+
+procedure TfrmCadCatProd.alteracao;
+var
+  Qry: TFDQuery;
+begin
+
+  Qry:= TFDQuery.Create(nil);
+
+  try
+
+    Qry.Connection := dmConexao.fdConexao;
+
+    Qry.Close;
+    Qry.SQL.Clear;
+    Qry.SQL.Add('UPDATE cat_produto SET nome = :nome where codigo = :codigo ');
+
+    Qry.ParamByName('nome').AsString := edDescricao.Text;
+    Qry.ParamByName('codigo').AsInteger := StrToInt(edCodigo.Text);
+
+    Qry.ExecSQL;
+
+    if Qry.RowsAffected > 0 then
+      ShowMessage('Categoria de Produto atualizada com sucesso!')
+    else
+      ShowMessage('Erro ao atualizar Categoria de Produto.');
+
+  finally
+
+    if Assigned(Qry) then
+      Qry.free;
+
+    qryListagem.Refresh;
+
+  end;
+
+end;
+
+end.

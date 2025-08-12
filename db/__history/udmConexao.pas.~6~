@@ -1,0 +1,47 @@
+unit udmConexao;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.Phys.PG, FireDAC.Phys.PGDef, Dialogs;
+
+type
+  TdmConexao = class(TDataModule)
+    fdConexao: TFDConnection;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dmConexao: TdmConexao;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TdmConexao.DataModuleCreate(Sender: TObject);
+begin
+  fdConexao.Params.DriverID := 'PG';              // Driver para PostgreSQL
+  fdConexao.Params.Database := 'sistemadevendas';   // Nome do banco
+  fdConexao.Params.UserName := 'postgres';         // Usuário
+  fdConexao.Params.Password := 'postgres';           // Senha
+  fdConexao.Params.Add('Server=localhost');       // Servidor
+  fdConexao.Params.Add('Port=5432');               // Porta padrão do Postgres
+
+  try
+    fdConexao.Connected := True;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao conectar: ' + E.Message);
+  end;
+end;
+
+end.
